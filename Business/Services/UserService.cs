@@ -39,7 +39,11 @@ namespace Business.Services
                 return new ErrorResult("User Names with the same name exists");
             User entity = new User()
             {
-                UserName = model.UserName.Trim()
+                UserName = model.UserName.Trim(),
+                IsActive =model.isActive,
+                RoleId = model.RoleId,
+                Password = model.Password,
+
             };
 
             _db.Users.Add(entity);
@@ -50,7 +54,16 @@ namespace Business.Services
 
         public Result Delete(int Id)
         {
-            throw new NotImplementedException();
+
+            User entity = _db.Users.SingleOrDefault(e => e.Id == Id);
+            if (entity is null)
+                return new ErrorResult("User not found");
+            if (entity.Role is not null)
+                return new ErrorResult("USer cannot be deleted because it has relational role");
+            _db.Users.Remove(entity);
+            _db.SaveChanges();
+            return new SuccessResult("User deleted successfully");
+
         }
 
         public IQueryable<UserModel> Query()
@@ -70,7 +83,19 @@ namespace Business.Services
 
         public Result Update(UserModel model)
         {
-            throw new NotImplementedException();
+            if (_db.Users.Any(e => e.Id != model.Id && e.UserName.ToLower() == model.UserName.ToLower().Trim()))
+                return new ErrorResult("User Names with the same name exists");
+
+            User entity = _db.Users.SingleOrDefault(e => e.Id == model.Id);
+            if (entity is null)
+                return new ErrorResult("User not found");
+            entity.UserName = model.UserName.Trim();
+            
+
+            _db.Users.Update(entity);
+            _db.SaveChanges();
+
+            return new SuccessResult("User Updated Successfully");
         }
     }
 }
