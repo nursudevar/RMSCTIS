@@ -3,7 +3,7 @@ using Business.Models;
 using DataAccess_.Contexts;
 using DataAccess_.Entities;
 using DataAccess_.Results;
-using MySqlX.XDevAPI.Common;
+using DataAccess_.Results.Bases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
