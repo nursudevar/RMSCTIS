@@ -11,8 +11,9 @@ namespace DataAccess.Contexts
         public Db CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<Db>();
-            optionsBuilder.UseMySQL("Server=(localdb)\\mssqllocaldb;Database=RMSDB;Trusted_Connection=True;");
-          
+            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=test;Trusted_Connection=True;");
+
+
             // First, create an object containing the connection string of your database
             // (it's more suitable to use the development database).
 

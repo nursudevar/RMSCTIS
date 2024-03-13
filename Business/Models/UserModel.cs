@@ -3,6 +3,7 @@
 using DataAccess_.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,8 +27,11 @@ namespace Business.Models
 
         public int RoleId { get; set; }
 
+      
 
         #endregion
+
+
 
     }
 }

@@ -1,3 +1,4 @@
+using Business.Services;
 using DataAccess_.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 #region Ioc Container
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<Db>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IUserService, UserService>();
 #endregion
 
 
