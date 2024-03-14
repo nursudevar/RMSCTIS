@@ -3,10 +3,15 @@
 @*Model namespace using directive should be added to _ViewImports.cshtml.*@
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Users";
 }
 
 <h1>@ViewData["Title"]</h1>
+@* 
+@if (ViewData["View Message"] is not null)@*ViewData.ViewMessage
+{
+	<p class="text-danger">@ViewData["ViewMessage"]</p>
+} *@
 
 <h4>User</h4>
 <hr />
@@ -14,6 +19,8 @@
     <div class="col-12">
         <form asp-action="Create">
 		@Html.AntiForgeryToken()
+
+
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="row mb-3">
                 <label asp-for="UserName" class="col-2 col-form-label"></label>

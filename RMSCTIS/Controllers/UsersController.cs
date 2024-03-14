@@ -10,6 +10,7 @@ using DataAccess_.Contexts;
 using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
+using DataAccess_.Results.Bases;
 
 //Generated from Custom Template.
 namespace MVC.Controllers
@@ -59,8 +60,23 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add insert service logic here
-                return RedirectToAction(nameof(Index));
+                Result result = _userService.Add(user);
+                if(result.IsSuccessfull)
+                {
+                    // return RedirectToAction("Index");
+
+                    TempData["Message"] = result.Message;
+                    return RedirectToAction(nameof(Index), "User");
+
+                }
+
+                // ViewData["View Message"] = result.Message;
+
+                // ViewBag.ViewMessage = result.Message;
+
+                ModelState.AddModelError("", result.Message);
+
+               
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
             ViewData["RoleId"] = new SelectList(new List<SelectListItem>(), "Value", "Text");
@@ -70,7 +86,7 @@ namespace MVC.Controllers
         // GET: Users/Edit/5
         public IActionResult Edit(int id)
         {
-            UserModel user = null; // TODO: Add get item service logic here
+            UserModel user = _userService.Query().SingleOrDefault(e=> e.Id == id);
             if (user == null)
             {
                 return NotFound();
@@ -89,9 +105,15 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add update service logic here
-                return RedirectToAction(nameof(Index));
-            }
+                Result result = _userService.Update(user);
+                if(result.IsSuccessfull)
+                {
+                    TempData["Message"] = result.Message;
+					return RedirectToAction(nameof(Details), new {id = user.Id});
+
+				}
+                ModelState.AddModelError("", result.Message);
+			}
             // TODO: Add get related items service logic here to set ViewData if necessary
             ViewData["RoleId"] = new SelectList(new List<SelectListItem>(), "Value", "Text");
             return View(user);
@@ -100,7 +122,7 @@ namespace MVC.Controllers
         // GET: Users/Delete/5
         public IActionResult Delete(int id)
         {
-            UserModel user = null; // TODO: Add get item service logic here
+            UserModel user = _userService.Query().SingleOrDefault(e => e.Id == id); // TODO: Add get item service logic here
             if (user == null)
             {
                 return NotFound();
@@ -113,8 +135,9 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            // TODO: Add delete service logic here
-            return RedirectToAction(nameof(Index));
+           Result result = _userService.Delete(id);
+			TempData["Message"] = result.Message;
+			return RedirectToAction(nameof(Index));
         }
 	}
 }

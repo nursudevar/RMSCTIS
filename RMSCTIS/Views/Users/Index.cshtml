@@ -8,6 +8,12 @@
 
 <h1>@ViewData["Title"]</h1>
 
+
+@if (TempData["Message"] is not null)
+{
+    <p class="bg-info text-black">@TempData["Message"]</p>
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
