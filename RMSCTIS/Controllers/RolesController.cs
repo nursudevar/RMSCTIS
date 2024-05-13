@@ -11,12 +11,10 @@ using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
 
-//Generated from Custom Template.
 namespace MVC.Controllers
 {
     public class RolesController : Controller
     {
-        // TODO: Add service injections here
         private readonly IRoleService _roleService;
 
         public RolesController(IRoleService roleService)
@@ -24,14 +22,12 @@ namespace MVC.Controllers
             _roleService = roleService;
         }
 
-        // GET: Roles
         public IActionResult Index()
         {
             List<RoleModel> roleList = _roleService.Query().ToList();
             return View(roleList);
         }
 
-        // GET: Roles/Details/5
         public IActionResult Details(int id)
         {
             RoleModel role = _roleService.Query().SingleOrDefault(r => r.Id == id);
@@ -43,7 +39,6 @@ namespace MVC.Controllers
         }
         public IActionResult Create()
         {
-            // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View();
         }
 
@@ -67,7 +62,6 @@ namespace MVC.Controllers
 
      
 
-        // GET: Roles/Edit/5
         public IActionResult Edit(int id)
         {
             RoleModel role = _roleService.Query().SingleOrDefault(r => r.Id == id);
@@ -78,9 +72,6 @@ namespace MVC.Controllers
             return View(role);
         }
 
-        // POST: Roles/Edit
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(RoleModel role)
@@ -90,33 +81,28 @@ namespace MVC.Controllers
                 var result = _roleService.Update(role);
                 if (result.IsSuccessfull)
                 {
-                    TempData["Message"] = result.Message; // we must put TempData["Message"] in the Index view
+                    TempData["Message"] = result.Message; 
                     return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError("", result.Message);
             }
-            // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(role);
         }
 
-        // GET: Roles/Delete/5
+
         public IActionResult Delete(int id)
         {
-            RoleModel role = null; // TODO: Add get item service logic here
-            if (role == null)
-            {
-                return NotFound();
-            }
-            return View(role);
+            var result = _roleService.Delete(id);
+            TempData["Message"] = result.Message; // we must put TempData["Message"] in the Index view
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: Roles/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             var result = _roleService.Delete(id);
-            TempData["Message"] = result.Message; // we must put TempData["Message"] in the Index view
+            TempData["Message"] = result.Message; 
             return RedirectToAction(nameof(Index));
         }
 	}

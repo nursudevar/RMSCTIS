@@ -14,6 +14,8 @@ namespace DataAccess_.Entities
 
         public int Id { get; set; }
 
+        [Required] 
+        [StringLength(50)] 
         public string Title { get; set; }
 
         public string Content { get; set; }
