@@ -17,25 +17,27 @@ namespace MVC.Controllers
 {
     public class UsersController : Controller
     {
-        // TODO: Add service injections here
+       
         private readonly IUserService _userService;
+		private readonly IRoleService _roleService;
 
-        public UsersController(IUserService userService)
-        {
-            _userService = userService;
-        }
+		public UsersController(IUserService userService, IRoleService roleService)
+		{
+			_userService = userService;
+			_roleService = roleService;
+		}
 
-        // GET: Users
-        public IActionResult Index()
+		// GET: Users
+		public IActionResult Index()
         {
-            List<UserModel> userList = _userService.Query().ToList(); // TODO: Add get collection service logic here
+            List<UserModel> userList = _userService.Query().ToList();
             return View(userList);
         }
 
-        // GET: Users/Details/5
+       
         public IActionResult Details(int id)
         {
-            UserModel user = _userService.Query().SingleOrDefault(e=>e.Id ==id); // TODO: Add get item service logic here
+            UserModel user = _userService.Query().SingleOrDefault(e=>e.Id ==id); 
             if (user == null)
             {
                 return NotFound();
@@ -43,17 +45,16 @@ namespace MVC.Controllers
             return View(user);
         }
 
-        // GET: Users/Create
+      
         public IActionResult Create()
         {
-            // TODO: Add get related items service logic here to set ViewData if necessary
-            ViewData["RoleId"] = new SelectList(new List<SelectListItem>(), "Value", "Text");
-            return View();
+          
+
+			ViewData["RoleId"] = new SelectList(_roleService.Query().ToList(), "Id", "Name");
+			return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserModel user)
@@ -63,27 +64,25 @@ namespace MVC.Controllers
                 Result result = _userService.Add(user);
                 if(result.IsSuccessfull)
                 {
-                    // return RedirectToAction("Index");
+                   
 
                     TempData["Message"] = result.Message;
-                    return RedirectToAction(nameof(Index), "User");
+                    return RedirectToAction(nameof(Index));
 
                 }
 
-                // ViewData["View Message"] = result.Message;
-
-                // ViewBag.ViewMessage = result.Message;
+              
 
                 ModelState.AddModelError("", result.Message);
 
                
             }
-            // TODO: Add get related items service logic here to set ViewData if necessary
+     
             ViewData["RoleId"] = new SelectList(new List<SelectListItem>(), "Value", "Text");
             return View(user);
         }
 
-        // GET: Users/Edit/5
+
         public IActionResult Edit(int id)
         {
             UserModel user = _userService.Query().SingleOrDefault(e=> e.Id == id);
@@ -96,9 +95,7 @@ namespace MVC.Controllers
             return View(user);
         }
 
-        // POST: Users/Edit
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(UserModel user)
@@ -114,15 +111,15 @@ namespace MVC.Controllers
 				}
                 ModelState.AddModelError("", result.Message);
 			}
-            // TODO: Add get related items service logic here to set ViewData if necessary
+          
             ViewData["RoleId"] = new SelectList(new List<SelectListItem>(), "Value", "Text");
             return View(user);
         }
 
-        // GET: Users/Delete/5
+       
         public IActionResult Delete(int id)
         {
-            UserModel user = _userService.Query().SingleOrDefault(e => e.Id == id); // TODO: Add get item service logic here
+            UserModel user = _userService.Query().SingleOrDefault(e => e.Id == id); 
             if (user == null)
             {
                 return NotFound();

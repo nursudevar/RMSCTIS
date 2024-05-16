@@ -35,12 +35,10 @@ namespace Business.Services
 		{
 			return _db.Roles.Include(e => e.Users).OrderBy(e => e.Name).Select(e => new RoleModel()
 			{
-				// model - entity property assignments
 				Id = e.Id,
 				Name = e.Name,
 
-				// modified model - entity property assignments for displaying in views
-				UserCountOutput = e.Users.Count // display the user count for each role
+				UserCountOutput = e.Users.Count 
 			});
 		}
 
@@ -62,12 +60,11 @@ namespace Business.Services
 		Result IRoleService.Add(RoleModel model)
 		{
 			
-			var nameSqlParameter = new SqlParameter("name", model.Name.Trim());
-																				
-																				
-			var query = _db.Roles.FromSqlRaw("select * from Roles where UPPER(Name) = UPPER(@name)", nameSqlParameter);
-			if (query.Any()) 
-				return new ErrorResult("Role with the same name already exists!");
+
+            if (_db.Roles.Any(r => r.Name.ToLower() == model.Name.ToLower().Trim()))
+                return new ErrorResult("Role with the same title and date exists!");
+
+           
 
 			var entity = new Role()
 			{
@@ -88,16 +85,12 @@ namespace Business.Services
 
 		Result IRoleService.Update(RoleModel model)
 		{
-			
-			var nameSqlParameter = new SqlParameter("name", model.Name.Trim()); 
-			var idSqlParameter = new SqlParameter("id", model.Id);
-			
 
-			var query = _db.Roles.FromSqlRaw("select * from Roles where UPPER(Name) = UPPER(@name) and Id != @id", nameSqlParameter, idSqlParameter);
+            if (_db.Roles.Any(r => r.Name.ToLower() == model.Name.ToLower().Trim() && r.Id!= model.Id))
+                return new ErrorResult("Role with the same title and date exists!");
 
 
-			if (query.Any()) 
-				return new ErrorResult("Role with the same name already exists!");
+
 
 
 			var entity = new Role()

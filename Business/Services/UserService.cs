@@ -35,6 +35,9 @@ namespace Business.Services
 
         public Result Add(UserModel model)
         {
+
+            List<User> existingUsers = _db.Users.ToList();
+
             if (_db.Users.Any(e => e.UserName.ToLower() == model.UserName.ToLower().Trim()))
                 return new ErrorResult("User Names with the same name exists");
             User entity = new User()
@@ -43,7 +46,7 @@ namespace Business.Services
                 IsActive =model.isActive,
                 RoleId = model.RoleId,
                 Password = model.Password,
-
+                Status = model.Status,
             };
 
             _db.Users.Add(entity);

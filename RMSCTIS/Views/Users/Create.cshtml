@@ -1,4 +1,5 @@
-﻿@model UserModel
+﻿@using DataAccess_.Enums;
+@model UserModel
 @*Generated from Custom Template.*@
 @*Model namespace using directive should be added to _ViewImports.cshtml.*@
 
@@ -36,25 +37,26 @@
 					<span asp-validation-for="Password" class="text-danger"></span>
 				</div>
             </div>
-           
-            <div class="row mb-3">
-                <label asp-for="Status" class="col-2 col-form-label"></label>
+
+			<div class="row mb-3">
+				<label asp-for="Status" class="col-2 col-form-label"></label>
 				<div class="col-5">
 					<select asp-for="Status" class="form-select">
-						<option value="">-- Select --</option>
+						<option value="@((int)Statuses.Junior)">@Statuses.Junior</option>
+						<option value="@((int)Statuses.Senior)">@Statuses.Senior</option>
+						<option value="@((int)Statuses.Master)">@Statuses.Master</option>
 					</select>
-					<span asp-validation-for="Status" class="text-danger"></span>
 				</div>
-            </div>
-            <div class="row mb-3">
-                <label asp-for="RoleId" class="col-2 col-form-label"></label>
+			</div>
+			<div class="row mb-3">
+				<label asp-for="RoleId" class="col-2 col-form-label"></label>
 				<div class="col-5">
 					<select asp-for="RoleId" class="form-select" asp-items="ViewBag.RoleId">
 						<option value="">-- Select --</option>
 					</select>
 					<span asp-validation-for="RoleId" class="text-danger"></span>
 				</div>
-            </div>
+			</div>
             <div class="row mb-3">
 				<div class="offset-2 col-5">
 					<input type="submit" value="Save" class="btn btn-primary" />

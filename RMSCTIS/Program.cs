@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region AppSettings
 
-var section = builder.Configuration.GetSection(nameof(MVC.Settings.AppSettings)); 
+//var section = builder.Configuration.GetSection(nameof(MVC.Settings.AppSettings)); 
                                                                                   
-section.Bind(new MVC.Settings.AppSettings()); 
+//section.Bind(new MVC.Settings.AppSettings()); 
                                               
 #endregion
 
@@ -19,6 +19,8 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddDbContext<Db>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
 #endregion
 
 
