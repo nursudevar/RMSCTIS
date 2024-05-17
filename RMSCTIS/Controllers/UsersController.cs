@@ -90,9 +90,20 @@ namespace MVC.Controllers
             {
                 return NotFound();
             }
-            // TODO: Add get related items service logic here to set ViewData if necessary
-            ViewData["RoleId"] = new SelectList(new List<SelectListItem>(), "Value", "Text");
-            return View(user);
+			// TODO: Add get related items service logic here to set ViewData if necessary
+			var roleIds = _roleService.Query().Select(r => new SelectListItem
+			{
+				Value = r.Id.ToString(),
+				Text = r.Name
+			}).ToList();
+
+			var selectedRoleId = user.RoleId.ToString();
+
+			// Create a SelectList with the role IDs and set the selected value
+			ViewData["RoleId"] = new SelectList(roleIds, "Value", "Text", selectedRoleId);
+
+			return View(user);
+			
         }
 
        

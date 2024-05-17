@@ -92,18 +92,39 @@ namespace MVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            var result = _roleService.Delete(id);
-            TempData["Message"] = result.Message; // we must put TempData["Message"] in the Index view
-            return RedirectToAction(nameof(Index));
+             RoleModel role = _roleService.Query().SingleOrDefault(r => r.Id == id); // TODO: Add get item service logic here
+            if (role == null)
+            {
+                return NotFound();
+            }
+            return View(role);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var result = _roleService.Delete(id);
-            TempData["Message"] = result.Message; 
-            return RedirectToAction(nameof(Index));
+            // Debug statement to inspect ModelState
+            foreach (var modelStateEntry in ModelState.Values)
+            {
+                foreach (var error in modelStateEntry.Errors)
+                {
+                    Console.WriteLine($"ModelState error: {error.ErrorMessage}");
+                }
+            }
+
+            // Continue with deletion logic
+            try
+            {
+                var result = _roleService.Delete(id);
+                TempData["Message"] = result.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the role. Please try again later.";
+                return RedirectToAction(nameof(Index)); // Redirect to a suitable action or view
+            }
         }
-	}
+    }
 }
