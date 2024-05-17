@@ -32,7 +32,15 @@ namespace Business.Models
 
         [DisplayName("Date")]
         public string DateOutput { get; set; }
-        #endregion
+		#endregion
 
-    }
+		[DisplayName("User Count")]
+		public int UserCountOutput { get; set; }
+
+		[DisplayName("Users")]
+		public List<int> UserIdsInput { get; set; }
+
+		[DisplayName("Users")]
+		public string UserNamesOutput { get; set; }
+	}
 }

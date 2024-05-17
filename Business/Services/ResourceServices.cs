@@ -16,7 +16,9 @@ namespace Business.Services
 
        
         List<ResourceModel> GetList();
-    }
+		ResourceModel GetItem(int id);
+
+	}
 
     public class ResourceService : IResourceService
     {
@@ -29,8 +31,8 @@ namespace Business.Services
 
         public IQueryable<ResourceModel> Query()
         {
-            return _db.Resources.Select(r => new ResourceModel()
-            {
+			return _db.Resources.Include(r => r.UserResources).Select(r => new ResourceModel()
+			{
                 Content = r.Content,
                 Date = r.Date,
                 Id = r.Id,
@@ -38,19 +40,24 @@ namespace Business.Services
                 Title = r.Title,
               
                 ScoreOutput = r.Score.ToString("N1"),
-               
-                DateOutput = r.Date.HasValue ? r.Date.Value.ToString("MM/dd/yyyy hh:mm:ss") : ""
-               
-            }).OrderByDescending(r => r.Date).ThenByDescending(r => r.Score);
+
+				DateOutput = r.Date.HasValue ? r.Date.Value.ToString("MM/dd/yyyy hh:mm:ss") : "",
+
+				UserCountOutput = r.UserResources.Count,
+
+				UserNamesOutput = string.Join("<br />", r.UserResources.Select(ur => ur.User.UserName))
+
+			}).OrderByDescending(r => r.Date).ThenByDescending(r => r.Score);
         }
 
         public Result Add(ResourceModel model)
         {
-           
-            if (_db.Resources.Any(r => r.Date.GetValueOrDefault().Date == model.Date.GetValueOrDefault().Date &&
-                r.Title.ToUpper() == model.Title.ToUpper().Trim()))
-                return new ErrorResult("Resource with the same title and date exists!");
 
+			if (model.Date.HasValue &&
+				_db.Resources.Any(r => (r.Date ?? new DateTime()).Date == model.Date.Value.Date &&
+				r.Title.ToUpper() == model.Title.ToUpper().Trim()))
+				return new ErrorResult("Resource with the same title and date exists!");
+			
             var entity = new Resource()
             {
                
@@ -58,9 +65,14 @@ namespace Business.Services
 
                 Date = model.Date,
                 Score = model.Score,
-                Title = model.Title.Trim() 
-                                           
-            };
+				Title = model.Title.Trim(),
+
+				UserResources = model.UserIdsInput.Select(userId => new UserResource()
+				{
+					UserId = userId
+				}).ToList()
+
+			};
 
             _db.Resources.Add(entity);
             _db.SaveChanges();
@@ -70,20 +82,36 @@ namespace Business.Services
 
         public Result Update(ResourceModel model)
         {
-            if (_db.Resources.Any(r => r.Date.GetValueOrDefault().Date == model.Date.GetValueOrDefault().Date &&
-               r.Title.ToUpper() == model.Title.ToUpper().Trim() && r.Id != model.Id))
-                return new ErrorResult("Resource with the same title and date exists!");
-            var entity = new Resource()
+			if (model.Date.HasValue &&
+			   _db.Resources.Any(r => (r.Date ?? new DateTime()).Date == model.Date.Value.Date &&
+			   r.Title.ToUpper() == model.Title.ToUpper().Trim() && r.Id != model.Id))
+				return new ErrorResult("Resource with the same title and date exists!");
+
+			var existingEntity = _db.Resources.Include(r => r.UserResources).SingleOrDefault(r => r.Id == model.Id);
+			if (existingEntity is not null && existingEntity.UserResources is not null)
+				_db.UserResources.RemoveRange(existingEntity.UserResources);
+
+
+
+			var entity = new Resource()
             {
                 Id = model.Id, 
                 Content = model.Content?.Trim(),
                 Date = model.Date,
                 Score = model.Score,
-                Title = model.Title.Trim()
-            };
+
+				Title = model.Title.Trim(),
+
+				// inserting many to many relational entity
+				UserResources = model.UserIdsInput.Select(userId => new UserResource()
+				{
+					UserId = userId
+				}).ToList()
+
+			};
             _db.Resources.Update(entity);
-            _db.SaveChanges();
-            return new SuccessResult("Resource updated successfully.");
+			_db.SaveChanges();
+			return new SuccessResult("Resource updated successfully.");
         }
 
         public Result Delete(int id)
@@ -108,5 +136,8 @@ namespace Business.Services
             
             return Query().ToList();
         }
-    }
+
+		public ResourceModel GetItem(int id) => Query().SingleOrDefault(r => r.Id == id);
+	}
 }
+

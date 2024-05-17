@@ -11,55 +11,58 @@ using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
 
-//Generated from Custom Template.
 namespace MVC.Controllers
 {
     public class ResourcesController : Controller
     {
-        // TODO: Add service injections here
         private readonly IResourceService _resourceService;
+		private readonly IUserService _userService;
 
-        public ResourcesController(IResourceService resourceService)
+
+		public ResourcesController(IResourceService resourceService, IUserService userService)
+		{
+			_resourceService = resourceService;
+			_userService = userService;
+		}
+
+		public IActionResult Index()
         {
-            _resourceService = resourceService;
+			List<ResourceModel> resourceList = _resourceService.GetList();
+
+			return View(resourceList);
         }
 
-        // GET: Resources
-        public IActionResult Index()
-        {
-            List<ResourceModel> resourceList = new List<ResourceModel>(); // TODO: Add get collection service logic here
-            return View(resourceList);
-        }
-
-        // GET: Resources/Details/5
         public IActionResult Details(int id)
         {
-            ResourceModel resource = null; // TODO: Add get item service logic here
-            if (resource == null)
+			ResourceModel resource = _resourceService.GetItem(id);
+			if (resource == null)
             {
-                return NotFound();
-            }
+				return View("_Error", "Resource not found!");
+			}
             return View(resource);
         }
 
         // GET: Resources/Create
         public IActionResult Create()
         {
-            // TODO: Add get related items service logic here to set ViewData if necessary
-            return View();
-        }
+			ViewBag.UserId = new MultiSelectList(_userService.Query().ToList(), "Id", "UserName");
+			return View();
+		}
 
-        // POST: Resources/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ResourceModel resource)
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add insert service logic here
-                return RedirectToAction(nameof(Index));
+                var result = _resourceService.Add(resource);
+                if (result.IsSuccessfull)
+                {
+                    TempData["Message"] = result.Message;
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError("", result.Message);
             }
             // TODO: Add get related items service logic here to set ViewData if necessary
             return View(resource);
@@ -68,35 +71,35 @@ namespace MVC.Controllers
         // GET: Resources/Edit/5
         public IActionResult Edit(int id)
         {
-            ResourceModel resource = null; // TODO: Add get item service logic here
+            ResourceModel resource = null; 
             if (resource == null)
             {
                 return NotFound();
             }
-            // TODO: Add get related items service logic here to set ViewData if necessary
             return View(resource);
         }
 
-        // POST: Resources/Edit
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(ResourceModel resource)
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add update service logic here
-                return RedirectToAction(nameof(Index));
+                var result = _resourceService.Update(resource);
+                if (result.IsSuccessfull)
+                {
+                    TempData["Message"] = result.Message;
+                    // TODO: redirect to details
+                }
+                ModelState.AddModelError("", result.Message);
             }
-            // TODO: Add get related items service logic here to set ViewData if necessary
             return View(resource);
         }
 
-        // GET: Resources/Delete/5
         public IActionResult Delete(int id)
         {
-            ResourceModel resource = null; // TODO: Add get item service logic here
+            ResourceModel resource = null;
             if (resource == null)
             {
                 return NotFound();
@@ -104,13 +107,13 @@ namespace MVC.Controllers
             return View(resource);
         }
 
-        // POST: Resources/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            // TODO: Add delete service logic here
-            return RedirectToAction(nameof(Index));
-        }
+			var result = _resourceService.Delete(id);
+			TempData["Message"] = result.Message;
+			return RedirectToAction(nameof(Index));
+		}
 	}
 }
