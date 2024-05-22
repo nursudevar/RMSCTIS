@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using DataAccess_.Enums;
+using DataAccess_.Records.Bases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess_.Entities
 {
-    public class User
+    public class User: Record
     {
-        public int Id { get; set; }
+      
 
         public string UserName { get; set; }
 

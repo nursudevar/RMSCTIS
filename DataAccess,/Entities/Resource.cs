@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using DataAccess_.Records.Bases;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,11 +10,8 @@ using System.Threading.Tasks;
 
 namespace DataAccess_.Entities
 {
-    public  class Resource
+    public  class Resource : Record
     {
-
-
-        public int Id { get; set; }
 
         [Required] 
         [StringLength(50)] 

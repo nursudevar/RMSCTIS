@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess_.Records.Bases;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess_.Entities
 {
-    public class Role
+    public class Role : Record
     {
 
-        public int Id { get; set; } 
+      
 
         public string Name { get; set; }
 

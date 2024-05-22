@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using DataAccess_.Records.Bases;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess_.Entities
 {
-    public class UserResource
+    public class UserResource : Record
     {
         [Key]
         [Column (Order=0)]
