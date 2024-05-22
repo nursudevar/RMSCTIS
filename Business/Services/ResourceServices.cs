@@ -45,9 +45,10 @@ namespace Business.Services
 
 				UserCountOutput = r.UserResources.Count,
 
-				UserNamesOutput = string.Join("<br />", r.UserResources.Select(ur => ur.User.UserName))
+                UserNamesOutput = string.Join("<br />", r.UserResources.Select(ur => ur.User.UserName)), 
+                UserIdsInput = r.UserResources.Select(ur => ur.UserId).ToList()
 
-			}).OrderByDescending(r => r.Date).ThenByDescending(r => r.Score);
+            }).OrderByDescending(r => r.Date).ThenByDescending(r => r.Score);
         }
 
         public Result Add(ResourceModel model)
@@ -64,11 +65,11 @@ namespace Business.Services
                 Content = model.Content?.Trim(),
 
                 Date = model.Date,
-                Score = model.Score,
-				Title = model.Title.Trim(),
+                Score = model.Score ?? 0,
+                Title = model.Title.Trim(),
 
-				UserResources = model.UserIdsInput.Select(userId => new UserResource()
-				{
+                UserResources = model.UserIdsInput?.Select(userId => new UserResource()
+                {
 					UserId = userId
 				}).ToList()
 
@@ -93,24 +94,19 @@ namespace Business.Services
 
 
 
-			var entity = new Resource()
+            existingEntity.Content = model.Content?.Trim();
+            existingEntity.Date = model.Date;
+            existingEntity.Score = model.Score ?? 0;
+            existingEntity.Title = model.Title.Trim();
+
+            // inserting many to many relational entity
+            existingEntity.UserResources = model.UserIdsInput?.Select(userId => new UserResource()
             {
-                Id = model.Id, 
-                Content = model.Content?.Trim(),
-                Date = model.Date,
-                Score = model.Score,
+                UserId = userId
+            }).ToList();
 
-				Title = model.Title.Trim(),
-
-				// inserting many to many relational entity
-				UserResources = model.UserIdsInput.Select(userId => new UserResource()
-				{
-					UserId = userId
-				}).ToList()
-
-			};
-            _db.Resources.Update(entity);
-			_db.SaveChanges();
+            _db.Resources.Update(existingEntity);
+            _db.SaveChanges();
 			return new SuccessResult("Resource updated successfully.");
         }
 

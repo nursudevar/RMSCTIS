@@ -19,7 +19,8 @@ namespace Business.Models
 
         public string Content { get; set; }
 
-        public decimal Score { get; set; }
+        [Required(ErrorMessage = "{0} is required!")]
+        public decimal? Score { get; set; }
 
         public DateTime? Date { get; set; }
         #endregion

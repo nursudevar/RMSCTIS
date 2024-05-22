@@ -37,7 +37,7 @@
 					<td>
 						<a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;
 						<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;|&nbsp;
-                        <a href="#" onclick="deleteRole(@item.Id);">Delete</a><!-- for AlertifyJS cilent-side library -->
+                        <a href="#" onclick="deleteRole(@item.Id);">Delete</a>
 
 					</td>
 				</tr>
@@ -58,25 +58,22 @@
 
 
     <script>
-        function deleteRole(id) { // event for the delete link
+        function deleteRole(id) {
             alertify.confirm(
                 "Warning!",
                 "Are you sure you want to delete this role?",
-                function () { // Yes
+                function () { 
                     window.location.href = "/Roles/Delete/" + id;
-                    // alertify.success("Delete successful.");
-                    // we won't be able to see this because of redirection
+                    
                 },
-                function () { // No
+                function () { 
                     alertify.error("Delete canceled.");
                 }
             ).set("labels", { ok: "Yes", cancel: "No" });
         }
-        // Way 1:
-        // $(document).ready(function () { // after the DOM is loaded
-        // Way 2:
+        
         $(function () {
-            $("#datatable").DataTable(); // convert the HTML table with id "datatable" to a DataTable
+            $("#datatable").DataTable(); 
         });
     </script>
 }

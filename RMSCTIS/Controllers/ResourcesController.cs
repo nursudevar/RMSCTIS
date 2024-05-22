@@ -64,18 +64,23 @@ namespace MVC.Controllers
                 }
                 ModelState.AddModelError("", result.Message);
             }
-            // TODO: Add get related items service logic here to set ViewData if necessary
+
+
+            ViewBag.UserId = new MultiSelectList(_userService.Query().ToList(), "Id", "UserName");
+
+
             return View(resource);
         }
 
         // GET: Resources/Edit/5
         public IActionResult Edit(int id)
         {
-            ResourceModel resource = null; 
+            ResourceModel resource = _resourceService.GetItem(id);
             if (resource == null)
             {
-                return NotFound();
+                return View("_Error", "Resource not found!");
             }
+            ViewBag.UserId = new MultiSelectList(_userService.Query().ToList(), "Id", "UserName");
             return View(resource);
         }
 
@@ -90,10 +95,12 @@ namespace MVC.Controllers
                 if (result.IsSuccessfull)
                 {
                     TempData["Message"] = result.Message;
-                    // TODO: redirect to details
+                    return RedirectToAction(nameof(Details), new { id = resource.Id });
                 }
                 ModelState.AddModelError("", result.Message);
             }
+
+            ViewBag.UserId = new MultiSelectList(_userService.Query().ToList(), "Id", "UserName");
             return View(resource);
         }
 
