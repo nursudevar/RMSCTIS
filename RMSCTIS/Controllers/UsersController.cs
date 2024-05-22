@@ -11,6 +11,11 @@ using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
 using DataAccess_.Results.Bases;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 
 //Generated from Custom Template.
@@ -28,8 +33,24 @@ namespace MVC.Controllers
 			_roleService = roleService;
 		}
 
-		// GET: Users
-		public IActionResult Index()
+        [Authorize]
+        public IActionResult GetList()
+        {
+           
+            List<UserModel> userList = _userService.Query().ToList();
+          
+            return View("List", userList);
+        }
+
+        [Authorize(Roles = "admin")]
+
+        public JsonResult GetListJson()
+        {
+            var userList = _userService.Query().ToList();
+            return Json(userList);
+        }
+
+        public IActionResult Index()
         {
             List<UserModel> userList = _userService.Query().ToList();
             return View(userList);
@@ -148,5 +169,10 @@ namespace MVC.Controllers
 			TempData["Message"] = result.Message;
 			return RedirectToAction(nameof(Index));
         }
-	}
+
+
+    }
+
+
 }
+

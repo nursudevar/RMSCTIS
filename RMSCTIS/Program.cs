@@ -1,7 +1,8 @@
 using Business.Services;
 using DataAccess_.Contexts;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
+using MVC.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,26 @@ builder.Services.AddScoped<IResourceService, ResourceService>();
 #endregion
 
 
+#region Authentication
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+
+    .AddCookie(config =>
+    {
+        config.LoginPath = "/Account/Login";
+    
+        config.AccessDeniedPath = "/Account/AccessDenied";
+     
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(AppSettings.CookieExpirationInMinutes);
+        
+        config.SlidingExpiration = true;
+      
+    });
+#endregion
+
+
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -40,6 +61,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+#region Authentication
+app.UseAuthentication();
+#endregion
 
 app.UseAuthorization();
 
