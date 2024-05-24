@@ -32,15 +32,15 @@
             <div class="row mb-3">
                 <label asp-for="Score" class="col-2 col-form-label"></label>
 				<div class="col-5">
-					<input asp-for="Score" class="form-control" />
-					<span asp-validation-for="Score" class="text-danger"></span>
+					<input asp-for="ScoreOutput" class="form-control" />
+					<span asp-validation-for="ScoreOutput" class="text-danger"></span>
 				</div>
             </div>
             <div class="row mb-3">
                 <label asp-for="Date" class="col-2 col-form-label"></label>
 				<div class="col-5">
-					<input asp-for="Date" class="form-control datetimepicker" type="text" />
-					<span asp-validation-for="Date" class="text-danger"></span>
+					<input asp-for="DateOutput" class="form-control datetimepicker" type="text" />
+					<span asp-validation-for="DateOutput" class="text-danger"></span>
 				</div>
             </div>
 
@@ -48,10 +48,6 @@
 				<label asp-for="UserIdsInput" class="col-2 col-form-label"></label>
 				<div class="col-5">
 
-					@*
-					since the application user may select many users,
-					we created a list box by using multiple HTML attribute
-					*@
 					<select multiple asp-for="UserIdsInput" class="form-select select2" asp-items="ViewBag.UserId"></select>
 					<span asp-validation-for="UserIdsInput" class="text-danger"></span>
 				</div>

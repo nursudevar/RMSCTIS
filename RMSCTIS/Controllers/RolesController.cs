@@ -10,11 +10,12 @@ using DataAccess_.Contexts;
 using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
+using MVC.Controllers.Bases;
 
 namespace MVC.Controllers
 {
-    public class RolesController : Controller
-    {
+    public class RolesController : MvcControllerBase
+	{
         private readonly IRoleService _roleService;
 
         public RolesController(IRoleService roleService)

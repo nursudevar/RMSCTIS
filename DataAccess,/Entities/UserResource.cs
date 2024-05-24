@@ -13,8 +13,7 @@ namespace DataAccess_.Entities
 {
     public class UserResource : Record
     {
-        [Key]
-        [Column (Order=0)]
+   
         public int UserId { get; set; }
 
         public User User { get; set; }

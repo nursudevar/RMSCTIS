@@ -15,14 +15,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using MVC.Controllers.Bases;
 
 
 
 //Generated from Custom Template.
 namespace MVC.Controllers
 {
-    public class UsersController : Controller
-    {
+    public class UsersController : MvcControllerBase
+	{
        
         private readonly IUserService _userService;
 		private readonly IRoleService _roleService;

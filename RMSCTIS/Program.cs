@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region AppSettings
 
-//var section = builder.Configuration.GetSection(nameof(MVC.Settings.AppSettings)); 
+var section = builder.Configuration.GetSection(nameof(MVC.Settings.AppSettings)); 
                                                                                   
-//section.Bind(new MVC.Settings.AppSettings()); 
+section.Bind(new MVC.Settings.AppSettings()); 
                                               
 #endregion
 

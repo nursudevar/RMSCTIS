@@ -53,31 +53,28 @@ namespace Business.Services
 
         public Result Add(ResourceModel model)
         {
-
-			if (model.Date.HasValue &&
-				_db.Resources.Any(r => (r.Date ?? new DateTime()).Date == model.Date.Value.Date &&
-				r.Title.ToUpper() == model.Title.ToUpper().Trim()))
-				return new ErrorResult("Resource with the same title and date exists!");
-			
+           
+            if (model.Date.HasValue &&
+                _db.Resources.Any(r => (r.Date ?? new DateTime()).Date == model.Date.Value.Date &&
+                r.Title.ToUpper() == model.Title.ToUpper().Trim()))
+                return new ErrorResult("Resource with the same title and date exists!");
             var entity = new Resource()
             {
-               
+                
                 Content = model.Content?.Trim(),
 
                 Date = model.Date,
                 Score = model.Score ?? 0,
                 Title = model.Title.Trim(),
 
+
                 UserResources = model.UserIdsInput?.Select(userId => new UserResource()
                 {
-					UserId = userId
-				}).ToList()
-
-			};
-
+                    UserId = userId
+                }).ToList()
+            };
             _db.Resources.Add(entity);
             _db.SaveChanges();
-
             return new SuccessResult("Resource added successfully.");
         }
 

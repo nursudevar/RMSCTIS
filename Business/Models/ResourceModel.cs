@@ -19,7 +19,7 @@ namespace Business.Models
 
         public string Content { get; set; }
 
-        [Required(ErrorMessage = "{0} is required!")]
+   
         public decimal? Score { get; set; }
 
         public DateTime? Date { get; set; }
@@ -29,9 +29,12 @@ namespace Business.Models
 
         #region Extra properties required for the views
         [DisplayName("Score")]
+        [Required(ErrorMessage = "The Score field is required.")]
         public string ScoreOutput { get; set; }
 
         [DisplayName("Date")]
+        [Required(ErrorMessage = "The Date field is required.")]
+
         public string DateOutput { get; set; }
 		#endregion
 
@@ -42,6 +45,6 @@ namespace Business.Models
 		public List<int> UserIdsInput { get; set; }
 
 		[DisplayName("Users")]
-		public string UserNamesOutput { get; set; }
+		public string? UserNamesOutput { get; set; }
 	}
 }

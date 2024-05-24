@@ -10,10 +10,11 @@ using DataAccess_.Contexts;
 using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
+using MVC.Controllers.Bases;
 
 namespace MVC.Controllers
 {
-    public class ResourcesController : Controller
+    public class ResourcesController : MvcControllerBase
     {
         private readonly IResourceService _resourceService;
 		private readonly IUserService _userService;
@@ -56,7 +57,8 @@ namespace MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = _resourceService.Add(resource);
+				var selectedUserIds = resource.UserIdsInput;
+				var result = _resourceService.Add(resource);
                 if (result.IsSuccessfull)
                 {
                     TempData["Message"] = result.Message;
