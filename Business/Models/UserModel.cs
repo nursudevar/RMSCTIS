@@ -30,11 +30,22 @@ namespace Business.Models
 
         public int RoleId { get; set; }
 
-      
+
 
         #endregion
 
 
+        #region Extra properties required for the views
+        [DisplayName("Active")]
+        public string IsActiveOutput { get; set; }
+
+        [DisplayName("Role")]
+        public string RoleNameOutput { get; set; }
+
+        // for hiding password value from the user
+        [DisplayName("Password")]
+        public string PasswordOutput { get; set; }
+        #endregion
 
     }
 }

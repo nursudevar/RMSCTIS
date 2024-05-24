@@ -10,9 +10,11 @@ using DataAccess_.Contexts;
 using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MVC.Controllers
 {
+    [Authorize]
     public class ResourcesController : Controller
     {
         private readonly IResourceService _resourceService;
@@ -25,7 +27,8 @@ namespace MVC.Controllers
 			_userService = userService;
 		}
 
-		public IActionResult Index()
+        [AllowAnonymous]
+        public IActionResult Index()
         {
 			List<ResourceModel> resourceList = _resourceService.GetList();
 
@@ -42,7 +45,6 @@ namespace MVC.Controllers
             return View(resource);
         }
 
-        // GET: Resources/Create
         public IActionResult Create()
         {
 			ViewBag.UserId = new MultiSelectList(_userService.Query().ToList(), "Id", "UserName");
@@ -72,7 +74,6 @@ namespace MVC.Controllers
             return View(resource);
         }
 
-        // GET: Resources/Edit/5
         public IActionResult Edit(int id)
         {
             ResourceModel resource = _resourceService.GetItem(id);

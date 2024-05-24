@@ -13,13 +13,16 @@
 	<p class="bg-warning text-dark">@TempData["Message"]</p>
 }
 
-<p>
-    <a asp-action="Create">Create New</a>
-
+@if (User.Identity.IsAuthenticated) // show link to only logged in application users
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
 
 <p class="bg-info text-black">@Model.Count() resource(s) found.</p>
 
-</p>
+
 <table id="datatable" class="display" style="width:100%;">
     <thead>
         <tr>
@@ -59,11 +62,20 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.UserCountOutput)
                 </td>
-					<td>
-						<a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;
-						<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;|&nbsp;
-						<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-					</td>
+                <td class="text-end">
+
+                    @if (User.Identity.IsAuthenticated) 
+                    {
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                        @:&nbsp;|&nbsp;
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+
+                        @:&nbsp;|&nbsp;
+                        <a href="#" onclick="deleteResource(@item.Id);">Delete</a>
+                    }
+
+                </td>
 				</tr>
 		}
     </tbody>
@@ -82,25 +94,20 @@
 
 
     <script>
-        function deleteResource(id) { // event for the delete link
+        function deleteResource(id) { 
             alertify.confirm(
                 "Warning!",
                 "Are you sure you want to delete this resource?",
-                function () { // Yes
+                function () { 
                     window.location.href = "/Resources/Delete/" + id;
-                    // alertify.success("Delete successful.");
-                    // we won't be able to see this because of redirection
                 },
-                function () { // No
-                    // alertify.error("Delete canceled.");
+                function () { 
                 }
             ).set("labels", { ok: "Yes", cancel: "No" });
         }
-        // Way 1:
-        // $(document).ready(function () { // after the DOM is loaded
-        // Way 2:
+     
         $(function () {
-            $("#datatable").DataTable(); // convert the HTML table with id "datatable" to a JS-CSS DataTable
+            $("#datatable").DataTable(); 
         });
     </script>
 }

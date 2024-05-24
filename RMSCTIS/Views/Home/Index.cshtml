@@ -3,6 +3,16 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to RMSCTIS</h1>
+  
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <h1 class="display-4">Welcome to @AppSettings.AppTitle</h1>
+    }
+    else
+    {
+        
+        <h1 class="display-4">Welcome to @AppSettings.AppTitle <b>@User.Identity.Name</b></h1>
+    }
+
     <p>Nur Sude Var</p>
 </div>

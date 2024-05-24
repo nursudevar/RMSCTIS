@@ -81,6 +81,9 @@ namespace Business.Services
                 Status=e.Status,
                 UserName=e.UserName,
 
+
+                RoleNameOutput = e.Role.Name,
+                PasswordOutput = new string('*', e.Password.Length)
             });
         }
 

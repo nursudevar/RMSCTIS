@@ -15,10 +15,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using DataAccess.Enums;
+using DataAccess_.Enums;
 
 
-
-//Generated from Custom Template.
 namespace MVC.Controllers
 {
     public class UsersController : Controller
@@ -56,7 +56,7 @@ namespace MVC.Controllers
             return View(userList);
         }
 
-       
+        [Authorize(Roles = "admin")]
         public IActionResult Details(int id)
         {
             UserModel user = _userService.Query().SingleOrDefault(e=>e.Id ==id); 
@@ -81,12 +81,23 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserModel user)
         {
+
+            if (!User.Identity.IsAuthenticated || !User.IsInRole("admin")) 
+            {
+                user.Status = Statuses.Junior;
+                user.RoleId = (int)Roles.User;
+
+                ModelState.Remove(nameof(user.RoleId)); 
+            }
+
+
             if (ModelState.IsValid)
             {
                 Result result = _userService.Add(user);
                 if(result.IsSuccessfull)
                 {
-                   
+                    if (!User.Identity.IsAuthenticated || !User.IsInRole("admin"))
+                        return Redirect("Account/Login");
 
                     TempData["Message"] = result.Message;
                     return RedirectToAction(nameof(Index));
@@ -104,7 +115,7 @@ namespace MVC.Controllers
             return View(user);
         }
 
-
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(int id)
         {
             UserModel user = _userService.Query().SingleOrDefault(e=> e.Id == id);
@@ -112,7 +123,6 @@ namespace MVC.Controllers
             {
                 return NotFound();
             }
-			// TODO: Add get related items service logic here to set ViewData if necessary
 			var roleIds = _roleService.Query().Select(r => new SelectListItem
 			{
 				Value = r.Id.ToString(),
@@ -121,7 +131,6 @@ namespace MVC.Controllers
 
 			var selectedRoleId = user.RoleId.ToString();
 
-			// Create a SelectList with the role IDs and set the selected value
 			ViewData["RoleId"] = new SelectList(roleIds, "Value", "Text", selectedRoleId);
 
 			return View(user);
@@ -131,6 +140,7 @@ namespace MVC.Controllers
        
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(UserModel user)
         {
             if (ModelState.IsValid)
@@ -149,7 +159,7 @@ namespace MVC.Controllers
             return View(user);
         }
 
-       
+        [Authorize(Roles = "admin")]
         public IActionResult Delete(int id)
         {
             UserModel user = _userService.Query().SingleOrDefault(e => e.Id == id); 
@@ -160,15 +170,17 @@ namespace MVC.Controllers
             return View(user);
         }
 
-        // POST: Users/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteConfirmed(int id)
         {
            Result result = _userService.Delete(id);
 			TempData["Message"] = result.Message;
 			return RedirectToAction(nameof(Index));
         }
+
+
 
 
     }

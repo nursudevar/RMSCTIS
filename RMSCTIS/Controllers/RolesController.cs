@@ -10,9 +10,13 @@ using DataAccess_.Contexts;
 using DataAccess_.Entities;
 using Business.Services;
 using Business.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MVC.Controllers
 {
+
+    
+    [Authorize(Roles = "admin")]
     public class RolesController : Controller
     {
         private readonly IRoleService _roleService;
@@ -92,7 +96,7 @@ namespace MVC.Controllers
 
         public IActionResult Delete(int id)
         {
-             RoleModel role = _roleService.Query().SingleOrDefault(r => r.Id == id); // TODO: Add get item service logic here
+             RoleModel role = _roleService.Query().SingleOrDefault(r => r.Id == id); 
             if (role == null)
             {
                 return NotFound();
@@ -104,7 +108,6 @@ namespace MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            // Debug statement to inspect ModelState
             foreach (var modelStateEntry in ModelState.Values)
             {
                 foreach (var error in modelStateEntry.Errors)
@@ -113,7 +116,6 @@ namespace MVC.Controllers
                 }
             }
 
-            // Continue with deletion logic
             try
             {
                 var result = _roleService.Delete(id);
@@ -123,7 +125,7 @@ namespace MVC.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An error occurred while deleting the role. Please try again later.";
-                return RedirectToAction(nameof(Index)); // Redirect to a suitable action or view
+                return RedirectToAction(nameof(Index)); 
             }
         }
     }
